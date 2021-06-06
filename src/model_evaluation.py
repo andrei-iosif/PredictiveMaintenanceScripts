@@ -67,8 +67,8 @@ def evaluate_mlp_multiple_splits(x_test, y_test, num_trials, train_results_path,
     cmapss_mean = np.mean(cmapss_vals)
     cmapss_std = np.std(cmapss_vals)
 
-    print("MSE: mean={:.2f} stddev={:.2f}".format(mse_mean, mse_std))
-    print("RMSE: mean={:.2f} stddev={:.2f}".format(rmse_mean, rmse_std))
-    print("CMAPSS: mean={:.2f} stddev={:.2f}".format(cmapss_mean, cmapss_std))
+    print("MSE: mean = {:.2f}   stddev = {:.2f}".format(mse_mean, mse_std))
+    print("RMSE: mean = {:.2f}   stddev = {:.2f}".format(rmse_mean, rmse_std))
+    print("CMAPSS: mean = {:.2f}   stddev = {:.2f}".format(cmapss_mean, cmapss_std))
 
     return mse_vals, rmse_vals, cmapss_vals

@@ -23,3 +23,18 @@ def plot_rul(expected, predicted):
     plt.plot(range(len(predicted)), predicted, label='Predicted')
     plt.legend()
     plt.show()
+
+
+def plot_signal_filtering(df, signal_name, alpha=0.05, w=10):
+    signal = df[signal_name][:200]
+    smooth_signal_es = signal.ewm(alpha=alpha, adjust=False).mean()
+    smooth_signal_ma = signal.rolling(w, min_periods=1).mean()
+
+    plt.figure()
+    plt.title(f"Value of signal {signal_name}")
+    plt.xlabel("Time (num observations)")
+    plt.ylabel("Value")
+    plt.plot(signal, label='Original')
+    plt.plot(smooth_signal_es, label='Exponential smoothing')
+    plt.plot(smooth_signal_ma, label='Moving average')
+    plt.legend()
