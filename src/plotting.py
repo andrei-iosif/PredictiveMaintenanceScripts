@@ -22,7 +22,23 @@ def plot_rul(expected, predicted):
     plt.plot(range(len(expected)), expected, label='Expected')
     plt.plot(range(len(predicted)), predicted, label='Predicted')
     plt.legend()
-    plt.show()
+    plt.xlabel("Time (num samples)")
+    plt.ylabel("RUL")
+
+
+def plot_rul_confidence_interval(df):
+    x_1, y_1 = range(len(df['actual_RUL'])), df['actual_RUL']
+    x_2, y_2 = range(len(df['predicted_RUL_mean'])), df['predicted_RUL_mean']
+    cnf = df['predicted_RUL_std']
+
+    fig, ax = plt.subplots()
+    ax.plot(x_1, y_1, label='Expected')
+    ax.plot(x_2, y_2, label='Predicted')
+
+    ax.fill_between(x_2, (y_2 - cnf), (y_2 + cnf), color='orange', alpha=0.5)
+    ax.legend()
+    plt.xlabel("Time (cycles)")
+    plt.ylabel("RUL")
 
 
 def plot_signal_filtering(df, signal_name, alpha=0.05, w=10):
