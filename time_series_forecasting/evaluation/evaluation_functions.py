@@ -1,8 +1,8 @@
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_percentage_error
 
-from evaluation.metrics import tu_statistic
-from preprocessing.preprocessing_func import scale_time_series, train_test_split
+from time_series_forecasting.evaluation.metrics import tu_statistic
+from time_series_forecasting.preprocessing.preprocessing_func import scale_time_series, train_test_split
 
 
 def get_predictions(model, series, h, window_size, use_scaling, synthetic_series):

@@ -2,23 +2,20 @@ import configparser
 import os
 import sys
 
-from forecasting.ml_forecasting import time_series_plot, test_variable_window, evaluate_baseline_model
-from models.svr_forecaster import SVRForecaster
+from forecasting.ml_forecasting import time_series_plot, test_variable_window_with_preprocessing
 from preprocessing.preprocessing_func import read_time_series_data
 from time_series_forecasting.models.random_forest_forecaster import RandomForestForecaster
 
 DEBUG = True
 USE_SCALING = True
+USE_DIFFERENCING = True
+USE_LOG_TRANSFORM = False
 RESULTS_PATH = r'results'
-
 
 if __name__ == "__main__":
     DATASET = sys.argv[1]
 
     forecaster = RandomForestForecaster()
-    # forecaster = MLPForecaster()
-    # forecaster = SVRForecaster()
-
     config = configparser.ConfigParser()
     config.read(r'config/config.ini')
 
@@ -45,13 +42,13 @@ if __name__ == "__main__":
     else:
         h = 0
 
-    results_path = os.path.join(RESULTS_PATH, DATASET, forecaster.name)
+    results_path = os.path.join(RESULTS_PATH, DATASET, forecaster.name, "log")
     if not os.path.exists(results_path):
         os.makedirs(results_path)
 
     open(os.path.join(results_path, 'results.txt'), 'w').close()
 
-    evaluate_baseline_model(series, h, synthetic_series=synthetic_series)
-
-    # test_variable_window(series, forecaster, max_p, h=h, synthetic_series=synthetic_series, use_scaling=USE_SCALING,
-    #                      results_path=results_path, debug=True, dataset_name=DATASET)
+    test_variable_window_with_preprocessing(series, forecaster, max_p, h=h, synthetic_series=synthetic_series,
+                                            use_scaling=USE_SCALING, use_differencing=USE_DIFFERENCING,
+                                            use_log_transform=USE_LOG_TRANSFORM, results_path=results_path, debug=True,
+                                            dataset_name=DATASET)

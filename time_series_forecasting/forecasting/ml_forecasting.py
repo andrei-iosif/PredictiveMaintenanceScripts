@@ -8,13 +8,13 @@ from sklearn.metrics import mean_squared_error, mean_absolute_percentage_error
 from sklearn.model_selection import KFold, GridSearchCV, TimeSeriesSplit
 from sklearn.utils._testing import ignore_warnings
 
-from evaluation.metrics import tu_statistic
-from plotting.plot_func import time_series_plot
-from preprocessing.preprocessing_func import train_test_split, scale_time_series, difference_transform
-from serialization.serialization import save_object, print_msg
+from time_series_forecasting.evaluation.metrics import tu_statistic
+from time_series_forecasting.plotting.plot_func import time_series_plot, plot_forecasting
+from time_series_forecasting.preprocessing.preprocessing_func import train_test_split, scale_time_series, \
+    difference_transform, inv_diff
+from time_series_forecasting.serialization.serialization import save_object, print_msg
 
-USE_DIFFERENCING = False
-USE_LOG_TRANSFORM = False
+
 USE_EXPANDING_WINDOW = False
 
 
@@ -32,7 +32,8 @@ def grid_search(model, train_data, param_grid, compute_train_error, debug=False)
     return grid
 
 
-def compute_evaluation_metrics(predictions, actual, series, forecast_horizon, eval_results_path="", debug=False):
+def compute_evaluation_metrics(predictions, actual, series, forecast_horizon, eval_results_path="", debug=False,
+                               dataset_name=""):
     naive_predictions = series[-forecast_horizon - 1:-1]
     tu = tu_statistic(predictions, naive_predictions, actual)
 
@@ -44,17 +45,13 @@ def compute_evaluation_metrics(predictions, actual, series, forecast_horizon, ev
     mape = mean_absolute_percentage_error(predictions, actual)
 
     if debug:
-        print("MSE: ", mse)
-        print("TU: ", tu)
-        print("POCID: ", pocid)
-        print("MAPE:", mape)
+        plot_forecasting(actual, [predictions],
+                         ["Predictions"],
+                         title=f"Forecasting results for {dataset_name} dataset",
+                         linestyles=['--', '-.', ':'],
+                         output_path=None)
 
-        plt.plot(actual, label='Expected', marker='o')
-        plt.plot(predictions, label='Predicted', marker='*')
-        plt.legend()
-        plt.show()
-    else:
-        print_msg("(MSE, TU, POCID, MAPE) = {}, {}, {}, {}".format(mse, tu, pocid, mape), eval_results_path)
+    print_msg("(MSE, TU, POCID, MAPE) = {}, {}, {}, {}".format(mse, tu, pocid, mape), eval_results_path)
 
 
 def evaluate_baseline_model(series, h, synthetic_series=False):
@@ -100,7 +97,8 @@ def test_fixed_window(series, forecast_model, max_p, h, synthetic_series=False, 
 
 
 @ignore_warnings(category=ConvergenceWarning)
-def test_variable_window(series, forecast_model, max_p, h=0, synthetic_series=False, use_scaling=True, results_path="", debug=False):
+def test_variable_window(series, forecast_model, max_p, h=0, synthetic_series=False, use_scaling=True, results_path="",
+                         debug=False, dataset_name=""):
     series_values = series.values
     N = len(series_values)
 
@@ -147,12 +145,14 @@ def test_variable_window(series, forecast_model, max_p, h=0, synthetic_series=Fa
         y_test = scaler.inverse_transform(y_test.reshape(len(y_test), 1)).flatten()
         series_values = scaler.inverse_transform(series_values.reshape(len(series_values), 1)).flatten()
 
-    compute_evaluation_metrics(predictions, y_test, series_values, horizon, eval_results_path, debug=debug)
+    compute_evaluation_metrics(predictions, y_test, series_values, horizon, eval_results_path, debug=debug,
+                               dataset_name=dataset_name)
 
 
 @ignore_warnings(category=ConvergenceWarning)
 def test_variable_window_with_preprocessing(series, forecast_model, max_p, h, synthetic_series=False, use_scaling=True,
-                                            use_log_transform=False, use_differencing=False, results_path="", debug=False):
+                                            use_log_transform=False, use_differencing=False, results_path="", debug=False,
+                                            dataset_name=""):
     series_values = series.values
     N = len(series_values)
     horizon = int(0.05 * N) if synthetic_series else h
@@ -163,7 +163,6 @@ def test_variable_window_with_preprocessing(series, forecast_model, max_p, h, sy
 
     series_diff = difference_transform(series_log, interval=1) if use_differencing else series_log
     if debug:
-        # stationarity_test(series_diff)
         plt.plot(range(len(series_diff)), series_diff)
         plt.show()
 
@@ -192,6 +191,10 @@ def test_variable_window_with_preprocessing(series, forecast_model, max_p, h, sy
     print_msg("\nBest window size: {}".format(best_l), eval_results_path)
     print_msg("\nBest parameters found: {}\n".format(best_grid.best_params_), eval_results_path)
 
+    params = best_grid.best_params_
+    params["window"] = best_l
+
+    save_object(params, os.path.join(results_path, f"best_params_{forecast_model.name}.pkl"))
     save_object(best_grid, os.path.join(results_path, f"grid_search_{forecast_model.name}.pkl"))
     save_object(best_grid.best_estimator_, os.path.join(results_path, f"{forecast_model.name}_model.pkl"))
 
@@ -202,9 +205,6 @@ def test_variable_window_with_preprocessing(series, forecast_model, max_p, h, sy
     if use_scaling:
         predictions = scaler.inverse_transform(predictions.reshape(len(predictions), 1)).flatten()
         y_test = scaler.inverse_transform(y_test.reshape(len(y_test), 1)).flatten()
-
-    def inv_diff(x_diff, x_0):
-        return np.r_[x_0, x_diff].cumsum()[1:]
 
     # Invert difference transform
     if use_differencing:
@@ -217,5 +217,5 @@ def test_variable_window_with_preprocessing(series, forecast_model, max_p, h, sy
         predictions = np.exp(predictions)
         y_test = np.exp(y_test)
 
-    compute_evaluation_metrics(predictions, y_test, series_values, horizon)
-
+    compute_evaluation_metrics(predictions, y_test, series_values, horizon, eval_results_path=eval_results_path,
+                               dataset_name=dataset_name, debug=debug)

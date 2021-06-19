@@ -2,7 +2,7 @@ import numpy as np
 
 from sklearn.ensemble import RandomForestRegressor
 
-from models.forecaster import Forecaster
+from time_series_forecasting.models.forecaster import Forecaster
 
 
 class RandomForestForecaster(Forecaster):

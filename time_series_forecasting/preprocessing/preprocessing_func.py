@@ -32,16 +32,14 @@ def series_to_supervised(data, n_in=1, n_out=1, drop_nan=True):
     :return: pd.DataFrame of series framed for supervised learning.
     """
 
-    n_vars = 1
     df = pd.DataFrame(data)
-    cols, names = list(), list()
+    n_vars = len(df.columns)
+    cols, names = [], []
 
-    # input sequence (t-n, ... t-1)
     for i in range(n_in, 0, -1):
         cols.append(df.shift(i))
         names += [('var%d(t-%d)' % (j + 1, i)) for j in range(n_vars)]
 
-    # forecast sequence (t, t+1, ... t+n)
     for i in range(0, n_out):
         cols.append(df.shift(-i))
         if i == 0:
@@ -92,14 +90,10 @@ def difference_transform(series, interval=1):
     return np.array([series[i] - series[i - interval] for i in range(interval, len(series))])
 
 
-def invert_difference_transform(original_series, diff_series, interval):
+def inv_diff(series_diff, x_0):
     """
     Revert the differencing operation applied to a time series.
-    :param original_series: the original time series
-    :param diff_series: the differenced time series
-    :param interval: order of differencing
-    :return: the inverted time series
+    :param series_diff: the differenced time series
+    :param x_0: first element of original, non-differenced time series
     """
-    first_el = original_series[:interval]
-    reverted_el = np.array([diff_series[i - interval] + original_series[i - interval] for i in range(interval, len(original_series))])
-    return np.concatenate([first_el, reverted_el])
+    return np.r_[x_0, series_diff].cumsum()[1:]

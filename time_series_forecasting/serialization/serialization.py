@@ -13,5 +13,6 @@ def load_object(file):
 
 def print_msg(msg, output_file_path):
     print(msg)
-    with open(output_file_path, 'a') as file:
-        file.write(msg)
+    if output_file_path != '':
+        with open(output_file_path, 'a') as file:
+            file.write(msg)

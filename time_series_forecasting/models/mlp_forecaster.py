@@ -1,6 +1,6 @@
 from sklearn.neural_network import MLPRegressor
 
-from models.forecaster import Forecaster
+from time_series_forecasting.models.forecaster import Forecaster
 
 
 class MLPForecaster(Forecaster):
