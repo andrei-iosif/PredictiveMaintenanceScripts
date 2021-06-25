@@ -7,11 +7,11 @@ from keras.models import load_model
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
-from src.metrics import compute_evaluation_metrics
-from src.model import create_mlp_model, get_callbacks
-from src.plotting import plot_loss_curves
-from src.save_object import save_object
-from src.utils import numbers_list_to_string
+from rul_prediction.src.metrics import compute_evaluation_metrics
+from rul_prediction.src.model import create_mlp_model, get_callbacks
+from rul_prediction.src.plotting import plot_loss_curves
+from rul_prediction.src.serialization import save_object
+from rul_prediction.src.utils import numbers_list_to_string
 
 
 class MLPConfigParams:
@@ -137,3 +137,15 @@ def train_evaluate_mlp(x_train, y_train, x_test, y_test, num_trials,
     return mse_vals, rmse_vals, cmapss_vals
 
 
+def train_validation_split_by_unit(train_set, val_units=(10, 20), drop_unit_col=True):
+    unit_col = train_set['unit'].copy(deep=True)
+    if drop_unit_col:
+        train_set.drop(['unit'], axis=1, inplace=True)
+
+    train_idx = unit_col[~unit_col.isin(val_units)].index
+    val_idx = unit_col[unit_col.isin(val_units)].index
+
+    train_split = train_set.loc[train_idx]
+    val_split = train_set.loc[val_idx]
+
+    return train_split, val_split

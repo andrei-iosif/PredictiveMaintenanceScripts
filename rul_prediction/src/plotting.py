@@ -1,5 +1,3 @@
-import os
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -7,24 +5,27 @@ import numpy as np
 def plot_loss_curves(history, output_path=None, y_lim=(0, 150)):
     plt.plot(history['loss'])
     plt.plot(history['val_loss'])
-    plt.title('model loss')
+    plt.title('Model loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.ylim(y_lim)
     plt.legend(['train', 'validation'], loc='upper left')
 
     if output_path is not None:
-        plt.savefig(os.path.join(output_path, 'loss_curves.png'), format='png', dpi=300)
+        plt.savefig(output_path, format='png', dpi=300)
     plt.show()
 
 
-def plot_rul(expected, predicted):
+def plot_rul(expected, predicted, output_path=None):
     plt.figure()
     plt.plot(range(len(expected)), expected, label='Expected')
     plt.plot(range(len(predicted)), predicted, label='Predicted')
     plt.legend()
     plt.xlabel("Time (num samples)")
     plt.ylabel("RUL")
+
+    if output_path is not None:
+        plt.savefig(output_path, format='png', dpi=300)
 
 
 def plot_rul_confidence_interval(df, output_path=None):
@@ -72,8 +73,8 @@ def plot_prediction_error(df, units=(11, 14, 15), err_line=10, output_path=None)
         plt.savefig(output_path, format='png', dpi=300)
 
 
-def plot_signal_filtering(df, signal_name, alpha=0.05, w=10):
-    signal = df[signal_name][:200]
+def plot_signal_filtering(df, signal_name, signal_len=200, alpha=0.05, w=10, output_path=None):
+    signal = df[signal_name][:signal_len]
     smooth_signal_es = signal.ewm(alpha=alpha, adjust=False).mean()
     smooth_signal_ma = signal.rolling(w, min_periods=1).mean()
 
@@ -85,3 +86,6 @@ def plot_signal_filtering(df, signal_name, alpha=0.05, w=10):
     plt.plot(smooth_signal_es, label='Exponential smoothing')
     plt.plot(smooth_signal_ma, label='Moving average')
     plt.legend()
+
+    if output_path is not None:
+        plt.savefig(output_path, format='png', dpi=300)

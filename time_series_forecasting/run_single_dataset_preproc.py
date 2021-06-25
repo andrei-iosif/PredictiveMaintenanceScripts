@@ -9,7 +9,7 @@ from time_series_forecasting.models.random_forest_forecaster import RandomForest
 DEBUG = True
 USE_SCALING = True
 USE_DIFFERENCING = True
-USE_LOG_TRANSFORM = False
+USE_LOG_TRANSFORM = True
 RESULTS_PATH = r'results'
 
 if __name__ == "__main__":
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     else:
         h = 0
 
-    results_path = os.path.join(RESULTS_PATH, DATASET, forecaster.name, "log")
+    results_path = os.path.join(RESULTS_PATH, DATASET, forecaster.name, "log_diff")
     if not os.path.exists(results_path):
         os.makedirs(results_path)
 
