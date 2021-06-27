@@ -2,14 +2,15 @@ import configparser
 import os
 import sys
 
-from evaluation.evaluation_functions import get_predictions
-from plotting.plot_func import plot_forecasting
-from preprocessing.preprocessing_func import read_time_series_data
-from serialization.serialization import load_object
+from time_series_forecasting.src.evaluation.evaluation_functions import get_predictions
+from time_series_forecasting.src.plotting.plot_func import plot_forecasting
+from time_series_forecasting.src.preprocessing.preprocessing_func import read_time_series_data
+from time_series_forecasting.src.serialization.serialization import load_object
 
 DEBUG = True
 USE_SCALING = True
-RESULTS_PATH = r'results'
+CONFIG_PATH = r'../../config/config.ini'
+RESULTS_PATH = r'../../results'
 
 
 def load_model(model_str, results_path):
@@ -23,7 +24,7 @@ if __name__ == "__main__":
     DATASET = sys.argv[1]
 
     config = configparser.ConfigParser()
-    config.read(r'config/config.ini')
+    config.read(CONFIG_PATH)
 
     dataset_path = config[DATASET]['path']
     max_p = config.getint(DATASET, 'max_p')

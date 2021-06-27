@@ -8,11 +8,11 @@ from sklearn.metrics import mean_squared_error, mean_absolute_percentage_error
 from sklearn.model_selection import KFold, GridSearchCV, TimeSeriesSplit
 from sklearn.utils._testing import ignore_warnings
 
-from time_series_forecasting.evaluation.metrics import tu_statistic
-from time_series_forecasting.plotting.plot_func import time_series_plot, plot_forecasting
-from time_series_forecasting.preprocessing.preprocessing_func import train_test_split, scale_time_series, \
+from time_series_forecasting.src.evaluation.metrics import tu_statistic
+from time_series_forecasting.src.plotting.plot_func import time_series_plot, plot_forecasting
+from time_series_forecasting.src.preprocessing.preprocessing_func import train_test_split, scale_time_series, \
     difference_transform, inv_diff
-from time_series_forecasting.serialization.serialization import save_object, print_msg
+from time_series_forecasting.src.serialization.serialization import save_object, print_msg
 
 
 USE_EXPANDING_WINDOW = False

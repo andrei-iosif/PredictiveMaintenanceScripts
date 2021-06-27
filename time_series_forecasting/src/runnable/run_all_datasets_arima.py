@@ -1,10 +1,11 @@
 import configparser
 import os
 
-from forecasting.arima_forecasting import run
-from preprocessing.preprocessing_func import read_time_series_data
+from time_series_forecasting.src.forecasting.arima_forecasting import run
+from time_series_forecasting.src.preprocessing.preprocessing_func import read_time_series_data
 
-RESULTS_PATH = r'results'
+CONFIG_PATH = r'../../config/config.ini'
+RESULTS_PATH = r'../../results'
 USE_SCALING = True
 DEBUG = False
 
@@ -14,7 +15,7 @@ DATASET_LIST = ['OZONE', 'STAR', 'ATMOSPHERE_TEMPERATURE', 'PATIENT_DEMAND', 'PO
 
 if __name__ == "__main__":
     config = configparser.ConfigParser()
-    config.read(r'config/config.ini')
+    config.read(CONFIG_PATH)
 
     for dataset in DATASET_LIST:
         dataset_path = config[dataset]['path']

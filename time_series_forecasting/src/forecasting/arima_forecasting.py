@@ -7,8 +7,8 @@ from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.stattools import adfuller
 
-from time_series_forecasting.evaluation.metrics import tu_statistic
-from time_series_forecasting.serialization.serialization import save_object, print_msg
+from time_series_forecasting.src.evaluation.metrics import tu_statistic
+from time_series_forecasting.src.serialization.serialization import save_object, print_msg
 
 
 def fit_model(series, order):

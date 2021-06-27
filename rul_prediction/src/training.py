@@ -7,11 +7,11 @@ from keras.models import load_model
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
-from rul_prediction.src.metrics import compute_evaluation_metrics
-from rul_prediction.src.model import create_mlp_model, get_callbacks
-from rul_prediction.src.plotting import plot_loss_curves
-from rul_prediction.src.serialization import save_object
-from rul_prediction.src.utils import numbers_list_to_string
+from src.metrics import compute_evaluation_metrics
+from src.model import create_mlp_model, get_callbacks
+from src.plotting import plot_loss_curves
+from src.serialization import save_object
+from src.utils import numbers_list_to_string
 
 
 class MLPConfigParams:

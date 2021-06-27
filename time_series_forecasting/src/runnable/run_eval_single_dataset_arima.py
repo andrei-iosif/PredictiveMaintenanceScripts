@@ -4,13 +4,14 @@ import sys
 
 import numpy as np
 
-from forecasting.arima_forecasting import forecast_updated_iteration, compute_evaluation_metrics_arima
-from plotting.plot_func import plot_forecasting
-from preprocessing.preprocessing_func import read_time_series_data
-from serialization.serialization import load_object
+from time_series_forecasting.src.forecasting.arima_forecasting import forecast_updated_iteration, compute_evaluation_metrics_arima
+from time_series_forecasting.src.plotting.plot_func import plot_forecasting
+from time_series_forecasting.src.preprocessing.preprocessing_func import read_time_series_data
+from time_series_forecasting.src.serialization.serialization import load_object
 
 DEBUG = True
-RESULTS_PATH = r'results'
+CONFIG_PATH = r'../../config/config.ini'
+RESULTS_PATH = r'../../results'
 
 
 def evaluate_arima(series, model, h, synthetic_series, apply_log_transform=False):
@@ -40,7 +41,7 @@ if __name__ == "__main__":
     DATASET = sys.argv[1]
 
     config = configparser.ConfigParser()
-    config.read(r'config/config.ini')
+    config.read(CONFIG_PATH)
 
     dataset_path = config[DATASET]['path']
     max_p = config.getint(DATASET, 'max_p')

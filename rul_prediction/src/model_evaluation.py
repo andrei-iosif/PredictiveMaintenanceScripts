@@ -4,9 +4,9 @@ import numpy as np
 
 from keras.models import load_model
 
-from rul_prediction.src.metrics import compute_evaluation_metrics
-from rul_prediction.src.plotting import plot_loss_curves
-from rul_prediction.src.serialization import load_object
+from src.metrics import compute_evaluation_metrics
+from src.plotting import plot_loss_curves
+from src.serialization import load_object
 
 
 class EvaluationResults:

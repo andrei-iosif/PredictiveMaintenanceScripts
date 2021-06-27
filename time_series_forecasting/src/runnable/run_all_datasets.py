@@ -1,11 +1,12 @@
 import configparser
 import os
 
-from forecasting.ml_forecasting import test_variable_window
-from models.svr_forecaster import SVRForecaster
-from preprocessing.preprocessing_func import read_time_series_data
+from time_series_forecasting.src.forecasting.ml_forecasting import test_variable_window
+from time_series_forecasting.src.models.svr_forecaster import SVRForecaster
+from time_series_forecasting.src.preprocessing.preprocessing_func import read_time_series_data
 
-RESULTS_PATH = r'results'
+CONFIG_PATH = r'../../config/config.ini'
+RESULTS_PATH = r'../../results'
 USE_SCALING = True
 DEBUG = False
 
@@ -18,7 +19,7 @@ if __name__ == "__main__":
     forecaster = SVRForecaster()
 
     config = configparser.ConfigParser()
-    config.read(r'config/config.ini')
+    config.read(CONFIG_PATH)
 
     for dataset in DATASET_LIST:
         dataset_path = config[dataset]['path']

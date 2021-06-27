@@ -2,22 +2,24 @@ import configparser
 import os
 import sys
 
-from forecasting.ml_forecasting import time_series_plot, test_variable_window_with_preprocessing
-from preprocessing.preprocessing_func import read_time_series_data
-from time_series_forecasting.models.random_forest_forecaster import RandomForestForecaster
+from time_series_forecasting.src.forecasting.ml_forecasting import time_series_plot, test_variable_window_with_preprocessing
+from time_series_forecasting.src.preprocessing.preprocessing_func import read_time_series_data
+from time_series_forecasting.src.models.random_forest_forecaster import RandomForestForecaster
 
 DEBUG = True
 USE_SCALING = True
 USE_DIFFERENCING = True
 USE_LOG_TRANSFORM = True
-RESULTS_PATH = r'results'
+CONFIG_PATH = r'../../config/config.ini'
+RESULTS_PATH = r'../../results'
+
 
 if __name__ == "__main__":
     DATASET = sys.argv[1]
 
     forecaster = RandomForestForecaster()
     config = configparser.ConfigParser()
-    config.read(r'config/config.ini')
+    config.read(CONFIG_PATH)
 
     dataset_path = config[DATASET]['path']
     max_p = config.getint(DATASET, 'max_p')
@@ -50,5 +52,5 @@ if __name__ == "__main__":
 
     test_variable_window_with_preprocessing(series, forecaster, max_p, h=h, synthetic_series=synthetic_series,
                                             use_scaling=USE_SCALING, use_differencing=USE_DIFFERENCING,
-                                            use_log_transform=USE_LOG_TRANSFORM, results_path=results_path, debug=True,
+                                            use_log_transform=USE_LOG_TRANSFORM, results_path=results_path, debug=DEBUG,
                                             dataset_name=DATASET)
